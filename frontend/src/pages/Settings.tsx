@@ -26,7 +26,7 @@ const SELECT_FIELDS: Record<string, { label: string; value: string }[]> = {
   default_executor: [
     { label: 'API 协议（无浏览器）', value: 'protocol' },
     { label: '无头浏览器', value: 'headless' },
-    { label: '有头浏览器（调试用）', value: 'headed' },
+    { label: '有头浏览器', value: 'headed' },
   ],
   default_captcha_solver: [
     { label: 'YesCaptcha', value: 'yescaptcha' },
@@ -253,7 +253,7 @@ function ConfigField({ field }: { field: FieldConfig }) {
   const options = SELECT_FIELDS[field.key]
   const helpText =
     field.key === 'default_executor'
-      ? '仅对支持的平台生效；当前只有 Trae 支持浏览器模式，其他平台会自动回退为纯协议。'
+      ? '仅对支持的平台生效；ChatGPT、Cursor、Grok、Kiro、Tavily、Trae 支持浏览器模式，OpenBlockLabs 仅支持纯协议。'
       : undefined
 
   return (
