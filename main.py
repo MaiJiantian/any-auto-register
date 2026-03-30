@@ -16,36 +16,10 @@ from api.config import router as config_router
 from api.actions import router as actions_router
 from api.integrations import router as integrations_router
 
-EXPECTED_CONDA_ENV = os.getenv("APP_CONDA_ENV", "any-auto-register")
-
-
-def _detect_conda_env() -> str:
-    conda_env = os.getenv("CONDA_DEFAULT_ENV")
-    if conda_env:
-        return conda_env
-
-    prefix_parts = os.path.normpath(sys.prefix).split(os.sep)
-    if "envs" in prefix_parts:
-        idx = prefix_parts.index("envs")
-        if idx + 1 < len(prefix_parts):
-            return prefix_parts[idx + 1]
-    return ""
-
 
 def _print_runtime_info() -> None:
-    current_env = _detect_conda_env()
     print(f"[Runtime] Python: {sys.executable}")
-    print(f"[Runtime] Conda Env: {current_env or '未检测到'}")
-    if current_env and current_env != EXPECTED_CONDA_ENV:
-        print(
-            f"[WARN] 当前环境为 '{current_env}'，推荐使用 '{EXPECTED_CONDA_ENV}' 启动，"
-            "否则 Turnstile Solver 可能因依赖缺失而无法启动。"
-        )
-    elif not current_env:
-        print(
-            f"[WARN] 未检测到 conda 环境，推荐使用 '{EXPECTED_CONDA_ENV}' 启动，"
-            "否则 Turnstile Solver 可能因依赖缺失而无法启动。"
-        )
+    print(f"[Runtime] 虚拟环境：{os.path.basename(os.path.dirname(sys.executable))}")
 
 
 @asynccontextmanager

@@ -79,54 +79,62 @@
 
 - Python 3.12+
 - Node.js 18+
-- Conda（推荐）
+- uv（推荐）
 
 ## 推荐环境
 
-推荐固定使用 conda 环境名：
+推荐固定使用 uv 虚拟环境：
 
 ```bash
-any-auto-register
+uv venv --python 3.12
 ```
 
 本项目已经提供 Windows 启动脚本：
 
-- `D:\codemodule\ai\any-auto-register\start_backend.bat`
-- `D:\codemodule\ai\any-auto-register\start_backend.ps1`
-- `D:\codemodule\ai\any-auto-register\stop_backend.bat`
-- `D:\codemodule\ai\any-auto-register\stop_backend.ps1`
+- `start_backend.ps1`
+- `start_backend.bat`
+- `stop_backend.ps1`
+- `stop_backend.bat`
 
-它们会强制通过 `any-auto-register` 环境启动后端，避免出现：
+它们会自动检测并使用 uv 虚拟环境启动后端，避免出现：
 
 - 后端能启动，但 Solver 起不来
 - `ModuleNotFoundError: quart`
-- 前端里 Turnstile Solver 一直显示“未运行”
+- 前端里 Turnstile Solver 一直显示"未运行"
 
 ***
 
 ## 安装
 
-### 1. 创建 conda 环境
+### 1. 安装 uv
 
-```bash
-conda create -n any-auto-register python=3.12 -y
-conda activate any-auto-register
+Windows PowerShell:
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### 2. 安装后端依赖
+### 2. 创建虚拟环境并激活
 
 ```bash
-pip install -r requirements.txt
+uv venv --python 3.12
+.
 ```
 
-### 3. 安装浏览器依赖
+### 3. 安装后端依赖
 
 ```bash
-python -m playwright install chromium
-python -m camoufox fetch
+uv pip install -r requirements.txt
 ```
 
-### 4. 安装并构建前端
+### 4. 安装浏览器依赖
+
+```bash
+uv run python -m playwright install chromium
+uv run python -m camoufox fetch
+```
+
+### 5. 安装并构建前端
 
 ```bash
 cd frontend
@@ -161,14 +169,14 @@ start_backend.bat
 
 默认会使用：
 
-- conda 环境：`any-auto-register`
+- uv 虚拟环境：`.venv`
 - 服务地址：`http://localhost:8000`
 
 ### 手动启动方式
 
 ```bash
-conda activate any-auto-register
-python main.py
+uv venv --python 3.12
+uv run main.py
 ```
 
 ### 启动后访问
@@ -249,8 +257,8 @@ http://localhost:8889
 ### 手动启动 Solver
 
 ```bash
-conda activate any-auto-register
-python services/turnstile_solver/start.py --browser_type camoufox --port 8889
+uv venv --python 3.12
+uv run services/turnstile_solver/start.py --browser_type camoufox --port 8889
 ```
 
 ### Solver 日志
@@ -258,7 +266,7 @@ python services/turnstile_solver/start.py --browser_type camoufox --port 8889
 如果 Solver 启动失败，可查看：
 
 ```text
-D:\codemodule\ai\any-auto-register\services\turnstile_solver\solver.log
+services\turnstile_solver\solver.log
 ```
 
 ***
@@ -283,7 +291,7 @@ curl http://localhost:8000/api/solver/status
 
 ### 2. 出现 `ModuleNotFoundError: quart`
 
-说明你当前启动后端的 Python 不是 `any-auto-register` 环境。
+说明你当前启动后端的 Python 不是 uv 虚拟环境。
 
 请改用：
 
@@ -300,13 +308,13 @@ start_backend.bat
 ### 3. 如何确认当前 Python 是否正确
 
 ```bash
-python -c "import sys; print(sys.executable)"
+uv run python -c "import sys; print(sys.executable)"
 ```
 
 应当类似于：
 
 ```text
-D:\miniconda\conda3\envs\any-auto-register\python.exe
+C:\developer\code\any-auto-register\.venv\Scripts\python.exe
 ```
 
 ### 4. Solver 能打开，但状态还是不对
@@ -393,7 +401,7 @@ http://localhost:8889/
 | 服务         | 说明                                           |
 | ---------- | -------------------------------------------- |
 | YesCaptcha | 需填写 Client Key                               |
-| 本地 Solver  | 依赖 `camoufox` + `quart`，并要求后端运行在正确 conda 环境中 |
+| 本地 Solver  | 依赖 `camoufox` + `quart`，并要求后端运行在正确 uv 虚拟环境中 |
 
 ***
 
